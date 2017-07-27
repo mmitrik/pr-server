@@ -21,7 +21,7 @@ var vstsGit = connection.getGitApi();
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
-    res.send("Hello World!" + token);
+    res.send("Hello World!");
 })
 
 app.listen(3000, function () {
@@ -34,14 +34,6 @@ app.post("/", function (req, res) {
     var repoId = req.body.resource.repository.id;
     var pullRequestId = req.body.resource.pullRequestId;
     var title = req.body.resource.title;
-
-    console.log(repoId);
-    console.log(pullRequestId);
-    console.log(title); 
-
-    vstsGit.getPullRequestById(pullRequestId).then( result => {
-        console.log(result);
-    });
 
     // Build the status object that we want to post.
     // Assume that the PR is ready for review...
@@ -57,6 +49,8 @@ app.post("/", function (req, res) {
 
     // Check the title to see if there is "WIP" in the title.
     if (title.includes("WIP")) {
+
+        // If so, change the status to pending and change the description.
         prStatus.state = "pending";
         prStatus.description = "Work in progress"
     }
